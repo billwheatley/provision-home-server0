@@ -37,6 +37,14 @@
     ansible.builtin.hostname:
       name: server0
 
+  - name: Ensure logind.conf file exists
+    ansible.builtin.file:
+      path: /etc/systemd/logind.conf
+      state: file
+      owner: root
+      group: root
+      mode: '0644'
+
   - name: Ensure lid close does not trigger sleep (on battery)
     ansible.builtin.lineinfile:
       path: /etc/systemd/logind.conf
