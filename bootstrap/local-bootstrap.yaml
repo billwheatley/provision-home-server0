@@ -9,7 +9,7 @@
       update_cache: yes
       name:
         - sshpass
-        - sshd
+        - openssh-server
       allowerasing: yes
       state: present
   - name: Ensure ssh directory exist
