@@ -10,8 +10,8 @@ As your main admin/sudo user (do not sudo the call, that is done in the script):
 
 ```console
 cd ~
-mkdir -p ~/dev/ansible-desktop
-cd ~/dev/ansible-desktop
+mkdir -p ~/ansible-bootstrap
+cd ~/ansible-bootstrap
 ```
 
 Short Version:
