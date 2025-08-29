@@ -40,7 +40,7 @@
   - name: Ensure logind.conf file exists
     ansible.builtin.file:
       path: /etc/systemd/logind.conf
-      state: file
+      state: touch
       owner: root
       group: root
       mode: '0644'
