@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -x "$(command -v dnf)" ]; then 
-    sudo dnf -y install ansible git
+    sudo dnf -y install ansible-core git
 else 
     echo Not sure which package manager is running on this machine
     exit 1
