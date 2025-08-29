@@ -12,6 +12,7 @@
         - openssh-server
       allowerasing: yes
       state: present
+
   - name: Ensure ssh directory exist
     ansible.builtin.file:
       path: "{{ ansible_user_dir }}/.ssh"
@@ -19,13 +20,49 @@
       mode: '0700'
       owner: "{{ localhost_user }}"
       group: "{{ localhost_user_group }}"
+
   - name: Ensure user account has ssh key pair generated
     community.crypto.openssh_keypair:
       path: "{{ ansible_user_dir }}/.ssh/id_rsa"
       owner: "{{ localhost_user }}"
       group: "{{ localhost_user_group }}"
+
   - name: Ensure sshd is enable and started
     ansible.builtin.systemd:
       name: sshd
       enabled: yes
       state: started
+
+  - name: Ensure hostname is correct
+    ansible.builtin.hostname:
+      name: server0
+
+  - name: Ensure lid close does not trigger sleep (on battery)
+    ansible.builtin.lineinfile:
+      path: /etc/systemd/logind.conf
+      regexp: '^#?HandleLidSwitch='
+      line: 'HandleLidSwitch=ignore'
+      state: present
+    notify: Restart logind
+
+  - name: Ensure lid close does not trigger sleep (on AC power)
+    ansible.builtin.lineinfile:
+      path: /etc/systemd/logind.conf
+      regexp: '^#?HandleLidSwitchExternalPower='
+      line: 'HandleLidSwitchExternalPower=ignore'
+      state: present
+    notify: Restart logind
+
+  - name: Ensure lid close does not trigger sleep (when docked)
+    ansible.builtin.lineinfile:
+      path: /etc/systemd/logind.conf
+      regexp: '^#?HandleLidSwitchDocked='
+      line: 'HandleLidSwitchDocked=ignore'
+      state: present
+    notify: Restart logind
+
+  handlers:
+    - name: Restart logind
+      ansible.builtin.systemd:
+        name: systemd-logind.service
+        state: restarted
