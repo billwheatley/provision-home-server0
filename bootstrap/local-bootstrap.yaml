@@ -5,7 +5,7 @@
   connection: local
   tasks:
   - name: Ensure Boot Strap Packages are present
-    dnf:
+    ansible.builtin.dnf:
       update_cache: yes
       name:
         - sshpass
@@ -13,19 +13,19 @@
       allowerasing: yes
       state: present
   - name: Ensure ssh directory exist
-    file:
+    ansible.builtin.file:
       path: "{{ ansible_user_dir }}/.ssh"
       state: directory
       mode: '0700'
       owner: "{{ localhost_user }}"
       group: "{{ localhost_user_group }}"
   - name: Ensure user account has ssh key pair generated
-    openssh_keypair:
+    community.crypto.openssh_keypair:
       path: "{{ ansible_user_dir }}/.ssh/id_rsa"
       owner: "{{ localhost_user }}"
       group: "{{ localhost_user_group }}"
   - name: Ensure sshd is enable and started
-    systemd:
+    ansible.builtin.systemd:
       name: sshd
       enabled: yes
       state: started
