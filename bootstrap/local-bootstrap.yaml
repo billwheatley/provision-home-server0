@@ -45,10 +45,10 @@
       group: root
       mode: '0755'
 
-  - name: Ensure power settings are correct
+  - name: Ensure logind settings are correct
     ansible.builtin.copy:
-      src: files/power.conf
-      dest: /etc/systemd/logind.conf.d/power.conf
+      src: files/logind.conf
+      dest: /etc/systemd/logind.conf.d/logind.conf
       owner: root
       group: root
       mode: '0644'
