@@ -1,0 +1,31 @@
+# Run as local user you want to be able to remotely provision, needs sudo access
+
+- name: Local Server Bootstrap
+  hosts: localhost
+  connection: local
+  tasks:
+  - name: Ensure Boot Strap Packages are present
+    dnf:
+      update_cache: yes
+      name:
+        - sshpass
+        - sshd
+      allowerasing: yes
+      state: present
+  - name: Ensure ssh directory exist
+    file:
+      path: "{{ ansible_user_dir }}/.ssh"
+      state: directory
+      mode: '0700'
+      owner: "{{ localhost_user }}"
+      group: "{{ localhost_user_group }}"
+  - name: Ensure user account has ssh key pair generated
+    openssh_keypair:
+      path: "{{ ansible_user_dir }}/.ssh/id_rsa"
+      owner: "{{ localhost_user }}"
+      group: "{{ localhost_user_group }}"
+  - name: Ensure sshd is enable and started
+    systemd:
+      name: sshd
+      enabled: yes
+      state: started
