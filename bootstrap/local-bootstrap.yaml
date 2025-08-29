@@ -37,36 +37,21 @@
     ansible.builtin.hostname:
       name: server0
 
-  - name: Ensure logind.conf file exists
+  - name: Ensure logind.conf.d directory exists
     ansible.builtin.file:
-      path: /etc/systemd/logind.conf
-      state: touch
+      path: /etc/systemd/logind.conf.d
+      state: directory
+      owner: root
+      group: root
+      mode: '0755'
+
+  - name: Ensure power settings are correct
+    ansible.builtin.copy:
+      src: files/power.conf
+      dest: /etc/systemd/logind.conf.d/power.conf
       owner: root
       group: root
       mode: '0644'
-
-  - name: Ensure lid close does not trigger sleep (on battery)
-    ansible.builtin.lineinfile:
-      path: /etc/systemd/logind.conf
-      regexp: '^#?HandleLidSwitch='
-      line: 'HandleLidSwitch=ignore'
-      state: present
-    notify: Restart logind
-
-  - name: Ensure lid close does not trigger sleep (on AC power)
-    ansible.builtin.lineinfile:
-      path: /etc/systemd/logind.conf
-      regexp: '^#?HandleLidSwitchExternalPower='
-      line: 'HandleLidSwitchExternalPower=ignore'
-      state: present
-    notify: Restart logind
-
-  - name: Ensure lid close does not trigger sleep (when docked)
-    ansible.builtin.lineinfile:
-      path: /etc/systemd/logind.conf
-      regexp: '^#?HandleLidSwitchDocked='
-      line: 'HandleLidSwitchDocked=ignore'
-      state: present
     notify: Restart logind
 
   handlers:
